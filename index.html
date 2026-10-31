@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buku Arsip Pelayanan Surat - Desa Sukarame Leles</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printArea, #printArea * {
+        visibility: visible;
+      }
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        background: white !important;
+        color: black !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header Instansi Pemerintah Desa -->
+  <header class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 text-white shadow-lg no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-4">
+          <div class="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-inner flex items-center justify-center">
+            <i class="fa-solid fa-landmark text-emerald-300 text-3xl"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="bg-emerald-500/30 text-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-medium tracking-wide uppercase border border-emerald-400/30">Pemerintah Kabupaten Garut</span>
+              <span class="bg-white/10 text-emerald-100 text-xs px-2 py-0.5 rounded-full">Kecamatan Leles</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white mt-1">DESA SUKARAME</h1>
+            <p class="text-xs sm:text-sm text-emerald-100">Sistem Registrasi & Arsip Digital Buku Tamu Pelayanan Surat</p>
+          </div>
+        </div>
+
+        <!-- Jam & Petugas Header -->
+        <div class="flex items-center gap-4 bg-white/10 px-4 py-2 rounded-xl border border-white/10">
+          <div class="text-right">
+            <div id="liveClock" class="font-mono text-sm font-semibold tracking-wider text-emerald-200">00:00:00 WIB</div>
+            <div id="liveDate" class="text-xs text-emerald-100">Hari ini</div>
+          </div>
+          <div class="h-8 w-px bg-white/20"></div>
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-emerald-500/40 flex items-center justify-center text-white text-xs font-bold ring-2 ring-emerald-300/40">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div class="text-xs">
+              <p class="text-emerald-200 text-[10px] leading-3 uppercase font-medium">Operator Aktif</p>
+              <p id="activeOfficerDisplay" class="font-semibold text-white leading-4">Staf Pelayanan</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigasi Menu Tab -->
+      <nav class="flex space-x-1 sm:space-x-3 mt-6 border-b border-emerald-700/60 overflow-x-auto pb-1 text-sm font-medium">
+        <button onclick="switchTab('tab-form')" id="btn-tab-form" class="tab-btn px-4 py-2.5 rounded-t-lg transition-all flex items-center gap-2 bg-white text-emerald-900 shadow-sm font-semibold">
+          <i class="fa-solid fa-file-circle-plus"></i>
+          <span>Registrasi Surat Baru</span>
+        </button>
+        <button onclick="switchTab('tab-arsip')" id="btn-tab-arsip" class="tab-btn px-4 py-2.5 rounded-t-lg transition-all flex items-center gap-2 text-emerald-100 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span>Buku Arsip Digital</span>
+          <span id="badgeTotalRecords" class="bg-emerald-600/60 text-white text-xs px-2 py-0.5 rounded-full ml-1">0</span>
+        </button>
+        <button onclick="switchTab('tab-statistik')" id="btn-tab-statistik" class="tab-btn px-4 py-2.5 rounded-t-lg transition-all flex items-center gap-2 text-emerald-100 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Laporan & Statistik</span>
+        </button>
+        <button onclick="switchTab('tab-pengaturan')" id="btn-tab-pengaturan" class="tab-btn px-4 py-2.5 rounded-t-lg transition-all flex items-center gap-2 text-emerald-100 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Backup & Pengaturan</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Konten Utama -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full no-print">
+
+    <!-- Notifikasi Toast -->
+    <div id="toastNotification" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 ease-in-out bg-white border-l-4 border-emerald-600 shadow-2xl rounded-r-xl p-4 max-w-md flex items-start gap-3">
+      <div id="toastIcon" class="text-emerald-600 text-xl mt-0.5">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <div class="flex-1">
+        <h4 id="toastTitle" class="font-bold text-sm text-slate-800">Pemberitahuan</h4>
+        <p id="toastMessage" class="text-xs text-slate-600 mt-0.5">Operasi berhasil dijalankan.</p>
+      </div>
+      <button onclick="hideToast()" class="text-slate-400 hover:text-slate-600 text-sm">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- ==================== TAB 1: FORMULIR INPUT ==================== -->
+    <section id="tab-form" class="tab-content block space-y-6">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-pen-to-square text-emerald-600"></i>
+              Formulir Pendaftaran Tamu & Pelayanan Surat
+            </h2>
+            <p class="text-xs text-slate-500">Silakan input identitas pemohon dan jenis surat yang diajukan ke Kantor Desa Sukarame.</p>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2">
+            <i class="fa-solid fa-hashtag text-emerald-600"></i>
+            <span>No. Registrasi Otomatis: <b id="previewRegNo" class="font-mono text-emerald-900">Memuat...</b></span>
+          </div>
+        </div>
+
+        <form id="serviceForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-6">
+          <input type="hidden" id="editEntryId" value="">
+
+          <!-- Baris 1: Nomor Surat & Waktu -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nomor Registrasi / Agenda</label>
+              <input type="text" id="regNumber" readonly class="w-full bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-700 font-mono focus:outline-none cursor-not-allowed">
+              <p class="text-[11px] text-slate-400 mt-1">Format: [Kode]/[No]/DS-SKR/[Tahun]</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Tanggal Pengajuan <span class="text-red-500">*</span></label>
+              <input type="date" id="serviceDate" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Waktu Pelayanan</label>
+              <input type="time" id="serviceTime" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+            </div>
+          </div>
+
+          <hr class="border-slate-200">
+
+          <!-- Baris 2: Data Pemohon -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-4">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                NIK Pemohon (16 Digit) <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <input type="text" id="nik" required maxlength="16" pattern="[0-9]{16}" placeholder="3205xxxxxxxxxxxx" class="w-full bg-white border border-slate-300 rounded-lg pl-3 pr-10 py-2 text-sm font-mono text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" oninput="validateNikInput(this)">
+                <span id="nikValidIndicator" class="absolute right-3 top-2.5 text-xs text-slate-400">
+                  <i class="fa-solid fa-id-card"></i>
+                </span>
+              </div>
+              <p id="nikHelp" class="text-[11px] text-slate-400 mt-1">Harus tepat 16 digit angka sesuai KTP/KK.</p>
+            </div>
+
+            <div class="md:col-span-5">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Nama Lengkap Pemohon <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="applicantName" required placeholder="Nama sesuai identitas KTP" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+            </div>
+
+            <div class="md:col-span-3">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                No. HP / WhatsApp
+              </label>
+              <input type="text" id="phoneNumber" placeholder="Contoh: 081234567890" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+            </div>
+          </div>
+
+          <!-- Baris 3: Alamat di Sukarame -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Dusun / Kampung <span class="text-red-500">*</span></label>
+              <select id="dusun" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+                <option value="">-- Pilih Dusun / Kp. --</option>
+                <option value="Kp. Sukarame">Kp. Sukarame</option>
+                <option value="Kp. Bojong">Kp. Bojong</option>
+                <option value="Kp. Ciburial">Kp. Ciburial</option>
+                <option value="Kp. Cikadu">Kp. Cikadu</option>
+                <option value="Kp. Pasir Muncang">Kp. Pasir Muncang</option>
+                <option value="Lainnya / Luar Wilayah">Lainnya / Luar Wilayah</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Rukun Warga (RW) <span class="text-red-500">*</span></label>
+              <select id="rw" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+                <option value="">Pilih RW</option>
+                <option value="RW 01">RW 01</option>
+                <option value="RW 02">RW 02</option>
+                <option value="RW 03">RW 03</option>
+                <option value="RW 04">RW 04</option>
+                <option value="RW 05">RW 05</option>
+                <option value="RW 06">RW 06</option>
+                <option value="RW 07">RW 07</option>
+                <option value="RW 08">RW 08</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Rukun Tetangga (RT) <span class="text-red-500">*</span></label>
+              <input type="text" id="rt" required placeholder="Contoh: RT 02" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Desa / Kecamatan</label>
+              <input type="text" readonly value="Desa Sukarame, Kec. Leles" class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-600 outline-none cursor-default font-medium">
+            </div>
+          </div>
+
+          <hr class="border-slate-200">
+
+          <!-- Baris 4: Informasi Surat & Petugas -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Jenis Surat Pelayanan <span class="text-red-500">*</span>
+              </label>
+              <select id="letterType" required onchange="handleLetterTypeChange(this)" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none font-medium">
+                <option value="">-- Pilih Jenis Pelayanan Surat --</option>
+                <option value="Surat Keterangan Usaha (SKU)" data-code="510">Surat Keterangan Usaha (SKU)</option>
+                <option value="Surat Keterangan Tidak Mampu (SKTM)" data-code="401">Surat Keterangan Tidak Mampu (SKTM)</option>
+                <option value="Surat Pengantar SKCK" data-code="331">Surat Pengantar SKCK</option>
+                <option value="Surat Keterangan Domisili" data-code="470">Surat Keterangan Domisili</option>
+                <option value="Surat Keterangan Kematian" data-code="472.12">Surat Keterangan Kematian</option>
+                <option value="Surat Keterangan Kelahiran" data-code="472.11">Surat Keterangan Kelahiran</option>
+                <option value="Surat Pengantar Nikah (N1-N4)" data-code="474.2">Surat Pengantar Nikah (N1-N4)</option>
+                <option value="Surat Keterangan Pindah Penduduk" data-code="475">Surat Keterangan Pindah Penduduk</option>
+                <option value="Surat Keterangan Belum Menikah" data-code="470">Surat Keterangan Belum Menikah</option>
+                <option value="Surat Keterangan Beda Nama" data-code="470">Surat Keterangan Beda Nama</option>
+                <option value="Lain-lain" data-code="000">Surat Lain-lain</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Petugas Pelayanan (Aparat Desa) <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="officerName" required placeholder="Nama Petugas Loket" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Status Pelayanan Surat <span class="text-red-500">*</span>
+              </label>
+              <select id="letterStatus" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-semibold outline-none">
+                <option value="Selesai" class="text-emerald-700 font-semibold">✅ Selesai (Sudah Diterbitkan)</option>
+                <option value="Diproses" class="text-amber-700 font-semibold" selected>⏳ Sedang Diproses</option>
+                <option value="Ditolak" class="text-red-700 font-semibold">❌ Ditolak / Berkas Kurang</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Baris 5: Keterangan / Keperluan -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Keperluan / Keterangan Tambahan <span class="text-red-500">*</span></label>
+            <textarea id="purpose" rows="2" required placeholder="Contoh: Keperluan pengajuan bantuan modal usaha BRI, syarat beasiswa sekolah, dsb." class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+          </div>
+
+          <!-- Tombol Aksi -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200">
+            <div class="text-xs text-slate-500 italic">
+              * Pastikan data NIK dan nama pemohon sudah sesuai KTP.
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="resetForm()" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 text-sm font-medium hover:bg-slate-100 transition-colors">
+                <i class="fa-solid fa-rotate-left mr-1"></i> Batal / Reset
+              </button>
+              <button type="submit" id="submitBtn" class="px-6 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-sm font-semibold shadow hover:shadow-md transition-all flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span id="btnSubmitText">Simpan ke Buku Arsip</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: BUKU ARSIP DIGITAL ==================== -->
+    <section id="tab-arsip" class="tab-content hidden space-y-4">
+      <!-- Toolbar Pencarian & Filter -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+        <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+          <!-- Live Search Input -->
+          <div class="relative w-full md:w-80">
+            <input type="text" id="searchInput" oninput="renderTable()" placeholder="Cari NIK, Nama Pemohon, No Reg..." class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none">
+            <span class="absolute left-3.5 top-2.5 text-slate-400">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+          </div>
+
+          <!-- Multi Filter -->
+          <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <select id="filterType" onchange="renderTable()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+              <option value="">Semua Jenis Surat</option>
+              <option value="Surat Keterangan Usaha (SKU)">SKU</option>
+              <option value="Surat Keterangan Tidak Mampu (SKTM)">SKTM</option>
+              <option value="Surat Pengantar SKCK">Pengantar SKCK</option>
+              <option value="Surat Keterangan Domisili">Domisili</option>
+              <option value="Surat Keterangan Kematian">Kematian</option>
+              <option value="Surat Keterangan Kelahiran">Kelahiran</option>
+              <option value="Surat Pengantar Nikah (N1-N4)">Pengantar Nikah</option>
+              <option value="Surat Keterangan Pindah Penduduk">Pindah Penduduk</option>
+              <option value="Lain-lain">Lain-lain</option>
+            </select>
+
+            <select id="filterStatus" onchange="renderTable()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+              <option value="">Semua Status</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Diproses">Diproses</option>
+              <option value="Ditolak">Ditolak</option>
+            </select>
+
+            <!-- Filter Tanggal -->
+            <input type="date" id="filterStartDate" onchange="renderTable()" title="Dari Tanggal" class="bg-slate-50 border border-slate-300 text-xs rounded-xl px-2.5 py-1.5 text-slate-700 outline-none">
+            <span class="text-xs text-slate-400">s/d</span>
+            <input type="date" id="filterEndDate" onchange="renderTable()" title="Sampai Tanggal" class="bg-slate-50 border border-slate-300 text-xs rounded-xl px-2.5 py-1.5 text-slate-700 outline-none">
+
+            <button onclick="resetFilters()" class="text-xs bg-slate-200 hover:bg-slate-300 px-3 py-2 rounded-xl text-slate-700 transition" title="Reset Filter">
+              <i class="fa-solid fa-filter-circle-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-2">
+          <div>
+            Menampilkan <span id="filteredCount" class="font-bold text-slate-700">0</span> dari total <span id="totalCount" class="font-bold text-slate-700">0</span> berkas arsip
+          </div>
+          <div class="flex items-center gap-2 mt-2 sm:mt-0">
+            <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm font-semibold transition">
+              <i class="fa-solid fa-file-excel"></i>
+              <span>Ekspor ke Excel / CSV</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabel Data Arsip -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                <th class="py-3.5 px-4 text-center w-12">No</th>
+                <th class="py-3.5 px-4">No. Registrasi & Tanggal</th>
+                <th class="py-3.5 px-4">Identitas Pemohon</th>
+                <th class="py-3.5 px-4">Wilayah / Alamat</th>
+                <th class="py-3.5 px-4">Jenis Surat & Keperluan</th>
+                <th class="py-3.5 px-4 text-center">Status</th>
+                <th class="py-3.5 px-4">Petugas</th>
+                <th class="py-3.5 px-4 text-center w-32">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-slate-100 text-xs text-slate-700">
+              <!-- Render otomatis via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden py-12 text-center">
+          <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl mb-3">
+            <i class="fa-solid fa-folder-open"></i>
+          </div>
+          <p class="text-sm font-medium text-slate-600">Belum ada data arsip pelayanan yang cocok.</p>
+          <p class="text-xs text-slate-400 mt-1">Coba ubah kata kunci pencarian atau bersihkan filter.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: STATISTIK & LAPORAN ==================== -->
+    <section id="tab-statistik" class="tab-content hidden space-y-6">
+      <!-- Kartu Ringkasan -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pelayanan Hari Ini</p>
+            <h3 id="statToday" class="text-3xl font-extrabold text-emerald-800 mt-1">0</h3>
+            <p class="text-[11px] text-emerald-600 font-medium mt-1"><i class="fa-solid fa-calendar-day"></i> Arsip terdaftar hari ini</p>
+          </div>
+          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl">
+            <i class="fa-solid fa-clipboard-user"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Bulan Ini</p>
+            <h3 id="statThisMonth" class="text-3xl font-extrabold text-teal-800 mt-1">0</h3>
+            <p class="text-[11px] text-teal-600 font-medium mt-1"><i class="fa-solid fa-chart-line"></i> Akumulasi bulan berjalan</p>
+          </div>
+          <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center text-xl">
+            <i class="fa-solid fa-calendar-days"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Surat Selesai</p>
+            <h3 id="statDone" class="text-3xl font-extrabold text-emerald-700 mt-1">0</h3>
+            <p id="statDonePercent" class="text-[11px] text-emerald-600 font-medium mt-1">0% dari total pengajuan</p>
+          </div>
+          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dalam Proses / Tertunda</p>
+            <h3 id="statPending" class="text-3xl font-extrabold text-amber-600 mt-1">0</h3>
+            <p class="text-[11px] text-amber-600 font-medium mt-1"><i class="fa-solid fa-hourglass-half"></i> Perlu verifikasi berkas</p>
+          </div>
+          <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-xl">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Distribusi Pelayanan Berdasarkan Jenis Surat & Dusun -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Breakdown Jenis Surat -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-list-check text-emerald-600"></i>
+            Distribusi Jenis Surat Terbanyak
+          </h3>
+          <div id="statTypeContainer" class="space-y-3">
+            <!-- Progress bars rendered via JS -->
+          </div>
+        </div>
+
+        <!-- Breakdown Dusun -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-map-location-dot text-teal-600"></i>
+            Sebaran Wilayah Pemohon (Dusun/Kampung)
+          </h3>
+          <div id="statDusunContainer" class="space-y-3">
+            <!-- Progress bars rendered via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: PENGATURAN & BACKUP ==================== -->
+    <section id="tab-pengaturan" class="tab-content hidden space-y-6">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2 mb-2">
+          <i class="fa-solid fa-database text-emerald-600"></i>
+          Manajemen Database & Keberlanjutan Data Arsip
+        </h3>
+        <p class="text-xs text-slate-600 max-w-3xl leading-relaxed">
+          Agar aplikasi buku tamu desa ini dapat <b>dipakai berkelanjutan bertahun-tahun</b> tanpa risiko kehilangan data, Anda disarankan mengunduh berkas cadangan (backup JSON) secara rutin (misal setiap akhir pekan atau akhir bulan) dan menyimpannya di Flashdisk atau Google Drive Kantor Desa Sukarame.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <!-- Backup Card -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg">
+                  <i class="fa-solid fa-download"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm text-slate-800">Unduh Cadangan (Backup JSON)</h4>
+                  <p class="text-xs text-slate-500">Simpan seluruh arsip pendaftaran ke file mandiri.</p>
+                </div>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                File backup berisi seluruh data riwayat registrasi surat, nama warga pemohon, tanggal, serta status arsip dalam format JSON standar.
+              </p>
+            </div>
+            <button onclick="downloadBackupJSON()" class="mt-4 w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 shadow-sm transition">
+              <i class="fa-solid fa-cloud-arrow-down"></i>
+              <span>Unduh File Cadangan Arsip</span>
+            </button>
+          </div>
+
+          <!-- Restore Card -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-lg">
+                  <i class="fa-solid fa-upload"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm text-slate-800">Pulihkan Data (Restore JSON)</h4>
+                  <p class="text-xs text-slate-500">Muat kembali data arsip dari file cadangan sebelumnya.</p>
+                </div>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Gunakan fitur ini jika berpindah komputer kantor atau setelah melakukan instalasi ulang peramban.
+              </p>
+            </div>
+            <div class="mt-4">
+              <input type="file" id="restoreFileInput" accept=".json" class="hidden" onchange="handleRestoreJSON(event)">
+              <button onclick="document.getElementById('restoreFileInput').click()" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-semibold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 shadow-sm transition">
+                <i class="fa-solid fa-file-import"></i>
+                <span>Pilih Berkas Cadangan (.JSON)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Konfigurasi Nama Petugas Default -->
+        <div class="mt-8 pt-6 border-t border-slate-200">
+          <h4 class="font-bold text-sm text-slate-800 mb-2">Pengaturan Identitas Default Staf Pelayanan</h4>
+          <div class="flex flex-col sm:flex-row items-center gap-3 max-w-xl">
+            <input type="text" id="settingDefaultOfficer" placeholder="Contoh: Asep Saepuloh (Kasi Pelayanan)" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 outline-none">
+            <button onclick="saveDefaultOfficer()" class="w-full sm:w-auto px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold rounded-lg transition whitespace-nowrap">
+              Simpan Profil Staf
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">Nama ini akan otomatis terisi setiap kali membuka formulir pelayanan baru.</p>
+        </div>
+
+        <!-- Hapus Seluruh Database (Bahaya) -->
+        <div class="mt-8 pt-6 border-t border-red-100 bg-red-50/50 p-4 rounded-xl border">
+          <div class="flex items-start justify-between flex-wrap gap-4">
+            <div>
+              <h5 class="text-sm font-bold text-red-800">Zona Berbahaya: Kosongkan Seluruh Data Arsip</h5>
+              <p class="text-xs text-red-600 mt-1">Hanya lakukan saat memulai tahun baru atau uji coba awal. Pastikan sudah mengunduh backup!</p>
+            </div>
+            <button onclick="confirmClearAllData()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition shadow-sm">
+              <i class="fa-solid fa-trash-can mr-1"></i> Kosongkan Arsip
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal Modal Dialog: Detail & Tanda Terima Cetak -->
+  <div id="detailModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50 rounded-t-2xl">
+        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+          <i class="fa-solid fa-receipt text-emerald-600"></i>
+          Resi Tanda Terima Permohonan Surat
+        </h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Area Cetak Resi -->
+      <div id="printArea" class="p-6 space-y-4">
+        <!-- Kop Surat Mini -->
+        <div class="text-center border-b-2 border-slate-800 pb-3">
+          <h2 class="text-base font-extrabold uppercase tracking-wide text-slate-900">Pemerintah Kabupaten Garut</h2>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800">Kecamatan Leles - Desa Sukarame</h3>
+          <p class="text-[11px] text-slate-600">Sekretariat: Jl. Raya Sukarame, Kec. Leles, Kab. Garut, Jawa Barat</p>
+        </div>
+
+        <div class="text-center py-2">
+          <span class="inline-block bg-slate-100 border border-slate-300 text-slate-800 font-bold px-3 py-1 rounded text-xs uppercase tracking-wider">
+            Bukti Pendaftaran / Tanda Terima Arsip
+          </span>
+        </div>
+
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+          <div class="grid grid-cols-3">
+            <span class="text-slate-500 font-medium">No. Registrasi</span>
+            <span id="modalRegNo" class="col-span-2 font-mono font-bold text-slate-800">: -</span>
+          </div>
+          <div class="grid grid-cols-3">
+            <span class="text-slate-500 font-medium">Tanggal Masuk</span>
+            <span id="modalDate" class="col-span-2 text-slate-800">: -</span>
+          </div>
+          <div class="grid grid-cols-3">
+            <span class="text-slate-500 font-medium">NIK Pemohon</span>
+            <span id="modalNik" class="col-span-2 font-mono font-semibold text-slate-800">: -</span>
+          </div>
+          <div class="grid grid-cols-3">
+            <span class="text-slate-500 font-medium">Nama Pemohon</span>
+            <span id="modalName" class="col-span-2 font-bold text-slate-800 uppercase">: -</span>
+          </div>
+          <div class="grid grid-cols-3">
+            <span class="text-slate-500 font-medium">Alamat</span>
+            <span id="modalAddress" class="col-span-2 text-slate-800">: -</span>
+          </div>
+          <div class="grid grid-cols-3">
+            <span class="text-slate-500 font-medium">Jenis Surat</span>
+            <span id="modalLetter" class="col-span-2 font-bold text-emerald-800">: -</span>
+          </div>
+          <div class="grid grid-cols-3">
+            <span class="text-slate-500 font-medium">Keperluan</span>
+            <span id="modalPurpose" class="col-span-2 text-slate-800 italic">: -</span>
+          </div>
+          <div class="grid grid-cols-3">
+            <span class="text-slate-500 font-medium">Status</span>
+            <span id="modalStatus" class="col-span-2 font-bold">: -</span>
+          </div>
+          <div class="grid grid-cols-3">
+            <span class="text-slate-500 font-medium">Petugas Loket</span>
+            <span id="modalOfficer" class="col-span-2 text-slate-800">: -</span>
+          </div>
+        </div>
+
+        <!-- Tanda Tangan Cetak -->
+        <div class="grid grid-cols-2 pt-6 text-center text-xs">
+          <div>
+            <p class="text-slate-600">Pemohon / Warga</p>
+            <div class="h-16"></div>
+            <p id="modalSignApplicant" class="font-bold underline text-slate-800">( ......................... )</p>
+          </div>
+          <div>
+            <p class="text-slate-600">Petugas Pelayanan Desa</p>
+            <div class="h-16"></div>
+            <p id="modalSignOfficer" class="font-bold underline text-slate-800">( ......................... )</p>
+          </div>
+        </div>
+
+        <p class="text-[10px] text-center text-slate-400 italic pt-2">
+          * Simpan struk ini sebagai bukti pengurusan administrasi di Kantor Desa Sukarame, Leles.
+        </p>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2 no-print rounded-b-2xl">
+        <button onclick="closeModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 text-xs font-semibold hover:bg-slate-100">
+          Tutup
+        </button>
+        <button onclick="window.print()" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-semibold flex items-center gap-2 shadow">
+          <i class="fa-solid fa-print"></i> Cetak Tanda Terima
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-auto no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500">
+      <p class="font-medium">Sistem Informasi Buku Tamu & Registrasi Arsip Pelayanan Surat Desa Sukarame</p>
+      <p class="mt-1 text-slate-400 text-[11px]">Kecamatan Leles, Kabupaten Garut, Jawa Barat &bull; Mandiri &bull; Berkelanjutan (Penyimpanan Lokal)</p>
+    </div>
+  </footer>
+
+  <!-- Script Logic Aplikasi -->
+  <script>
+    // Inisialisasi Kunci LocalStorage
+    const STORAGE_KEY = 'desa_sukarame_arsip_db';
+    const SETTINGS_KEY = 'desa_sukarame_arsip_settings';
+
+    // State Aplikasi
+    let records = [];
+    let appSettings = {
+      defaultOfficer: 'Petugas Pelayanan Desa',
+      lastYear: new Date().getFullYear()
+    };
+
+    // Load Pertama Kali
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      loadRecords();
+      setupInitialValues();
+      updateClock();
+      setInterval(updateClock, 1000);
+      renderTable();
+      updateDashboardStats();
+    });
+
+    // Real-time Jam & Tanggal
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB';
+      const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      
+      const clockEl = document.getElementById('liveClock');
+      const dateEl = document.getElementById('liveDate');
+      if (clockEl) clockEl.textContent = timeStr;
+      if (dateEl) dateEl.textContent = dateStr;
+    }
+
+    // Navigasi Tab
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      // Style tombol tab aktif
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-emerald-900', 'font-semibold', 'shadow-sm');
+        btn.classList.add('text-emerald-100');
+      });
+
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-emerald-100');
+        activeBtn.classList.add('bg-white', 'text-emerald-900', 'font-semibold', 'shadow-sm');
+      }
+
+      if (tabId === 'tab-arsip') {
+        renderTable();
+      } else if (tabId === 'tab-statistik') {
+        updateDashboardStats();
+      }
+    }
+
+    // Pengaturan & Data Store
+    function loadSettings() {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      if (raw) {
+        try {
+          appSettings = JSON.parse(raw);
+        } catch (e) {
+          console.error('Gagal parsing settings');
+        }
+      }
+      const officerDisp = document.getElementById('activeOfficerDisplay');
+      const settingInput = document.getElementById('settingDefaultOfficer');
+      if (officerDisp) officerDisp.textContent = appSettings.defaultOfficer || 'Staf Pelayanan';
+      if (settingInput) settingInput.value = appSettings.defaultOfficer || '';
+    }
+
+    function saveDefaultOfficer() {
+      const val = document.getElementById('settingDefaultOfficer').value.trim();
+      if (!val) {
+        showToast('Peringatan', 'Nama staf tidak boleh kosong', 'warning');
+        return;
+      }
+      appSettings.defaultOfficer = val;
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      loadSettings();
+      document.getElementById('officerName').value = val;
+      showToast('Berhasil', 'Nama petugas default berhasil diperbarui', 'success');
+    }
+
+    function loadRecords() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          records = JSON.parse(raw);
+        } catch (e) {
+          records = [];
+        }
+      } else {
+        // Data Contoh Awal untuk Desa Sukarame jika belum ada data
+        const sampleYear = new Date().getFullYear();
+        records = [
+          {
+            id: 'REC-1',
+            regNumber: `510/001/DS-SKR/${sampleYear}`,
+            date: new Date().toISOString().split('T')[0],
+            time: '08:30',
+            nik: '3205121508890001',
+            name: 'Asep Ridwan',
+            phone: '081223344556',
+            dusun: 'Kp. Sukarame',
+            rw: 'RW 02',
+            rt: 'RT 01',
+            letterType: 'Surat Keterangan Usaha (SKU)',
+            letterCode: '510',
+            purpose: 'Pengajuan kredit usaha mikro warung sembako ke Bank BRI',
+            officer: appSettings.defaultOfficer || 'Dadang Kosasih',
+            status: 'Selesai',
+            createdAt: Date.now() - 3600000
+          },
+          {
+            id: 'REC-2',
+            regNumber: `401/002/DS-SKR/${sampleYear}`,
+            date: new Date().toISOString().split('T')[0],
+            time: '09:15',
+            nik: '3205125406950003',
+            name: 'Siti Aminah',
+            phone: '085721112233',
+            dusun: 'Kp. Bojong',
+            rw: 'RW 03',
+            rt: 'RT 02',
+            letterType: 'Surat Keterangan Tidak Mampu (SKTM)',
+            letterCode: '401',
+            purpose: 'Syarat beasiswa kuliah anak tingkat diploma',
+            officer: appSettings.defaultOfficer || 'Dadang Kosasih',
+            status: 'Diproses',
+            createdAt: Date.now() - 1800000
+          }
+        ];
+        saveRecordsToStorage();
+      }
+      updateBadgeCounts();
+    }
+
+    function saveRecordsToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      updateBadgeCounts();
+    }
+
+    function updateBadgeCounts() {
+      const badge = document.getElementById('badgeTotalRecords');
+      if (badge) badge.textContent = records.length;
+    }
+
+    // Setup Awal Input Form
+    function setupInitialValues() {
+      const today = new Date();
+      const dateStr = today.toISOString().split('T')[0];
+      const hours = String(today.getHours()).padStart(2, '0');
+      const minutes = String(today.getMinutes()).padStart(2, '0');
+
+      document.getElementById('serviceDate').value = dateStr;
+      document.getElementById('serviceTime').value = `${hours}:${minutes}`;
+      document.getElementById('officerName').value = appSettings.defaultOfficer || 'Kasi Pelayanan';
+      
+      generateDynamicRegNumber();
+    }
+
+    // Buat Nomor Register Surat Otomatis Berdasarkan Kode Klasifikasi
+    function generateDynamicRegNumber() {
+      const editId = document.getElementById('editEntryId').value;
+      if (editId) return; // Jangan ubah jika sedang mode edit
+
+      const letterSelect = document.getElementById('letterType');
+      const selectedOption = letterSelect.options[letterSelect.selectedIndex];
+      const code = selectedOption && selectedOption.dataset.code ? selectedOption.dataset.code : '470';
+      const year = new Date().getFullYear();
+
+      // Hitung urutan di tahun berjalan
+      const currentYearRecords = records.filter(r => {
+        if (!r.date) return false;
+        return r.date.startsWith(year.toString());
+      });
+
+      const sequence = String(currentYearRecords.length + 1).padStart(3, '0');
+      const fullReg = `${code}/${sequence}/DS-SKR/${year}`;
+
+      document.getElementById('regNumber').value = fullReg;
+      document.getElementById('previewRegNo').textContent = fullReg;
+    }
+
+    function handleLetterTypeChange(selectEl) {
+      generateDynamicRegNumber();
+    }
+
+    function validateNikInput(input) {
+      input.value = input.value.replace(/[^0-9]/g, '');
+      const ind = document.getElementById('nikValidIndicator');
+      const help = document.getElementById('nikHelp');
+
+      if (input.value.length === 16) {
+        ind.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i>';
+        help.textContent = 'Format NIK valid (16 digit).';
+        help.className = 'text-[11px] text-emerald-600 font-medium mt-1';
+      } else {
+        ind.innerHTML = '<i class="fa-solid fa-id-card text-slate-400"></i>';
+        help.textContent = `Tersisa ${16 - input.value.length} digit lagi.`;
+        help.className = 'text-[11px] text-slate-400 mt-1';
+      }
+    }
+
+    // Submit Formulir (Tambah / Edit)
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const nik = document.getElementById('nik').value.trim();
+      if (nik.length !== 16) {
+        showToast('Peringatan Validasi', 'NIK pemohon harus tepat 16 digit angka!', 'warning');
+        return;
+      }
+
+      const editId = document.getElementById('editEntryId').value;
+      const letterSelect = document.getElementById('letterType');
+      const selectedOption = letterSelect.options[letterSelect.selectedIndex];
+      const letterCode = selectedOption && selectedOption.dataset.code ? selectedOption.dataset.code : '470';
+
+      const entryData = {
+        regNumber: document.getElementById('regNumber').value.trim(),
+        date: document.getElementById('serviceDate').value,
+        time: document.getElementById('serviceTime').value,
+        nik: nik,
+        name: document.getElementById('applicantName').value.trim(),
+        phone: document.getElementById('phoneNumber').value.trim() || '-',
+        dusun: document.getElementById('dusun').value,
+        rw: document.getElementById('rw').value,
+        rt: document.getElementById('rt').value.trim(),
+        letterType: letterSelect.value,
+        letterCode: letterCode,
+        purpose: document.getElementById('purpose').value.trim(),
+        officer: document.getElementById('officerName').value.trim(),
+        status: document.getElementById('letterStatus').value,
+      };
+
+      if (editId) {
+        // Mode Edit
+        const index = records.findIndex(r => r.id === editId);
+        if (index !== -1) {
+          records[index] = { ...records[index], ...entryData, updatedAt: Date.now() };
+          showToast('Data Diperbarui', 'Data arsip pelayanan berhasil diubah.', 'success');
+        }
+      } else {
+        // Mode Tambah Baru
+        const newRecord = {
+          id: 'REC-' + Date.now(),
+          ...entryData,
+          createdAt: Date.now()
+        };
+        records.unshift(newRecord); // Masukkan paling atas
+        showToast('Berhasil Tersimpan', `Arsip pemohon ${newRecord.name} berhasil diregistrasi ke sistem.`, 'success');
+      }
+
+      saveRecordsToStorage();
+      resetForm();
+      switchTab('tab-arsip');
+    }
+
+    function resetForm() {
+      document.getElementById('serviceForm').reset();
+      document.getElementById('editEntryId').value = '';
+      document.getElementById('btnSubmitText').textContent = 'Simpan ke Buku Arsip';
+      setupInitialValues();
+      validateNikInput(document.getElementById('nik'));
+    }
+
+    // Render Tabel Arsip dengan Filter & Pencarian
+    function renderTable() {
+      const searchKeyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      const filterType = document.getElementById('filterType')?.value || '';
+      const filterStatus = document.getElementById('filterStatus')?.value || '';
+      const filterStartDate = document.getElementById('filterStartDate')?.value || '';
+      const filterEndDate = document.getElementById('filterEndDate')?.value || '';
+
+      const filtered = records.filter(item => {
+        // Search filter
+        const matchSearch = !searchKeyword || 
+          item.nik.toLowerCase().includes(searchKeyword) ||
+          item.name.toLowerCase().includes(searchKeyword) ||
+          item.regNumber.toLowerCase().includes(searchKeyword) ||
+          item.purpose.toLowerCase().includes(searchKeyword);
+
+        // Type filter
+        const matchType = !filterType || item.letterType === filterType;
+
+        // Status filter
+        const matchStatus = !filterStatus || item.status === filterStatus;
+
+        // Date filter
+        let matchDate = true;
+        if (filterStartDate && item.date < filterStartDate) matchDate = false;
+        if (filterEndDate && item.date > filterEndDate) matchDate = false;
+
+        return matchSearch && matchType && matchStatus && matchDate;
+      });
+
+      // Update counters
+      const totalCountEl = document.getElementById('totalCount');
+      const filteredCountEl = document.getElementById('filteredCount');
+      if (totalCountEl) totalCountEl.textContent = records.length;
+      if (filteredCountEl) filteredCountEl.textContent = filtered.length;
+
+      const tbody = document.getElementById('tableBody');
+      const emptyState = document.getElementById('emptyState');
+
+      if (!tbody) return;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add('hidden');
+
+      tbody.innerHTML = filtered.map((item, index) => {
+        let statusBadge = '';
+        if (item.status === 'Selesai') {
+          statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-circle-check mr-1"></i>Selesai</span>';
+        } else if (item.status === 'Diproses') {
+          statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800"><i class="fa-solid fa-hourglass-half mr-1"></i>Diproses</span>';
+        } else {
+          statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-800"><i class="fa-solid fa-circle-xmark mr-1"></i>Ditolak</span>';
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 text-center font-mono text-slate-400">${index + 1}</td>
+            <td class="py-3 px-4">
+              <span class="font-mono font-bold text-emerald-800 block">${item.regNumber}</span>
+              <span class="text-[11px] text-slate-500"><i class="fa-regular fa-clock mr-1"></i>${item.date} (${item.time || '-'})</span>
+            </td>
+            <td class="py-3 px-4">
+              <span class="font-bold text-slate-900 uppercase block">${item.name}</span>
+              <span class="font-mono text-slate-500 text-[11px]"><i class="fa-regular fa-id-card mr-1"></i>${item.nik}</span>
+              ${item.phone && item.phone !== '-' ? `<span class="block text-[10px] text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i>${item.phone}</span>` : ''}
+            </td>
+            <td class="py-3 px-4">
+              <span class="font-medium text-slate-700 block">${item.dusun}</span>
+              <span class="text-[11px] text-slate-500">${item.rw} / ${item.rt}</span>
+            </td>
+            <td class="py-3 px-4 max-w-xs">
+              <span class="font-semibold text-slate-800 block">${item.letterType}</span>
+              <span class="text-[11px] text-slate-500 line-clamp-1 italic" title="${item.purpose}">${item.purpose}</span>
+            </td>
+            <td class="py-3 px-4 text-center">
+              ${statusBadge}
+            </td>
+            <td class="py-3 px-4 text-slate-600 font-medium">
+              ${item.officer}
+            </td>
+            <td class="py-3 px-4 text-center">
+              <div class="flex items-center justify-center gap-1">
+                <button onclick="viewPrintDetail('${item.id}')" title="Cetak Bukti Resi" class="p-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg transition">
+                  <i class="fa-solid fa-receipt"></i>
+                </button>
+                <button onclick="editRecord('${item.id}')" title="Ubah Data" class="p-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg transition">
+                  <i class="fa-solid fa-pencil"></i>
+                </button>
+                <button onclick="deleteRecord('${item.id}')" title="Hapus Berkas" class="p-1.5 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg transition">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterType').value = '';
+      document.getElementById('filterStatus').value = '';
+      document.getElementById('filterStartDate').value = '';
+      document.getElementById('filterEndDate').value = '';
+      renderTable();
+    }
+
+    // Edit Record
+    function editRecord(id) {
+      const item = records.find(r => r.id === id);
+      if (!item) return;
+
+      document.getElementById('editEntryId').value = item.id;
+      document.getElementById('regNumber').value = item.regNumber;
+      document.getElementById('previewRegNo').textContent = item.regNumber;
+      document.getElementById('serviceDate').value = item.date;
+      document.getElementById('serviceTime').value = item.time || '';
+      document.getElementById('nik').value = item.nik;
+      document.getElementById('applicantName').value = item.name;
+      document.getElementById('phoneNumber').value = item.phone === '-' ? '' : item.phone;
+      document.getElementById('dusun').value = item.dusun;
+      document.getElementById('rw').value = item.rw;
+      document.getElementById('rt').value = item.rt;
+      document.getElementById('letterType').value = item.letterType;
+      document.getElementById('purpose').value = item.purpose;
+      document.getElementById('officerName').value = item.officer;
+      document.getElementById('letterStatus').value = item.status;
+
+      document.getElementById('btnSubmitText').textContent = 'Perbarui Data Arsip';
+      validateNikInput(document.getElementById('nik'));
+
+      switchTab('tab-form');
+      showToast('Mode Edit', `Sedang mengedit arsip ${item.regNumber}`, 'info');
+    }
+
+    // Hapus Record Tunggal
+    function deleteRecord(id) {
+      const item = records.find(r => r.id === id);
+      if (!item) return;
+
+      // Buat custom modal konfirmasi sederhana tanpa alert
+      const proceed = confirmAction(`Hapus arsip pemohon "${item.name}" (${item.regNumber})? Tindakan ini tidak dapat dibatalkan.`);
+      if (proceed) {
+        records = records.filter(r => r.id !== id);
+        saveRecordsToStorage();
+        renderTable();
+        updateDashboardStats();
+        showToast('Data Dihapus', 'Berkas arsip berhasil dihapus dari sistem.', 'info');
+      }
+    }
+
+    // Pengganti window.confirm tanpa blocking browser jika memungkinkan
+    function confirmAction(message) {
+      // Menggunakan dialog browser bawaan semata untuk konfirmasi aman
+      return window.confirm(message);
+    }
+
+    // Tampilkan Modal Detail Resi Cetak
+    function viewPrintDetail(id) {
+      const item = records.find(r => r.id === id);
+      if (!item) return;
+
+      document.getElementById('modalRegNo').textContent = ': ' + item.regNumber;
+      document.getElementById('modalDate').textContent = ': ' + item.date + ' (' + (item.time || '-') + ')';
+      document.getElementById('modalNik').textContent = ': ' + item.nik;
+      document.getElementById('modalName').textContent = ': ' + item.name;
+      document.getElementById('modalAddress').textContent = `: ${item.dusun}, ${item.rw} / ${item.rt}, Desa Sukarame`;
+      document.getElementById('modalLetter').textContent = ': ' + item.letterType;
+      document.getElementById('modalPurpose').textContent = ': ' + item.purpose;
+      document.getElementById('modalStatus').innerHTML = ': ' + item.status;
+      document.getElementById('modalOfficer').textContent = ': ' + item.officer;
+
+      document.getElementById('modalSignApplicant').textContent = `( ${item.name} )`;
+      document.getElementById('modalSignOfficer').textContent = `( ${item.officer} )`;
+
+      const modal = document.getElementById('detailModal');
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    // Ekspor ke format CSV / Excel
+    function exportToCSV() {
+      if (records.length === 0) {
+        showToast('Pemberitahuan', 'Tidak ada data arsip untuk diekspor.', 'warning');
+        return;
+      }
+
+      // Headers CSV
+      const headers = [
+        'No Registrasi',
+        'Tanggal Pelayanan',
+        'Waktu',
+        'NIK',
+        'Nama Pemohon',
+        'No Telepon',
+        'Dusun',
+        'RW',
+        'RT',
+        'Jenis Surat',
+        'Keperluan',
+        'Petugas Pelayanan',
+        'Status Surat'
+      ];
+
+      const csvRows = [];
+      csvRows.push(headers.join(','));
+
+      records.forEach(item => {
+        const row = [
+          `"${item.regNumber}"`,
+          `"${item.date}"`,
+          `"${item.time || ''}"`,
+          `'${item.nik}`, // Kutip depan agar NIK 16 digit tidak terpotong di Excel
+          `"${item.name.replace(/"/g, '""')}"`,
+          `"${item.phone || ''}"`,
+          `"${item.dusun}"`,
+          `"${item.rw}"`,
+          `"${item.rt}"`,
+          `"${item.letterType}"`,
+          `"${item.purpose.replace(/"/g, '""')}"`,
+          `"${item.officer}"`,
+          `"${item.status}"`
+        ];
+        csvRows.push(row.join(','));
+      });
+
+      const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + csvRows.join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      const todayStr = new Date().toISOString().split('T')[0];
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Buku_Arsip_DesaSukarame_${todayStr}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('Ekspor Berhasil', 'Data arsip berhasil diunduh dalam format CSV/Excel.', 'success');
+    }
+
+    // Backup & Restore Database JSON
+    function downloadBackupJSON() {
+      if (records.length === 0) {
+        showToast('Peringatan', 'Database masih kosong, tidak ada data untuk dicadangkan.', 'warning');
+        return;
+      }
+
+      const backupData = {
+        app: 'Arsip-Desa-Sukarame',
+        exportDate: new Date().toISOString(),
+        total: records.length,
+        settings: appSettings,
+        data: records
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `BACKUP_ARSIP_DESA_SUKARAME_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      showToast('Backup Tersimpan', 'File cadangan JSON berhasil diunduh. Simpan di tempat yang aman.', 'success');
+    }
+
+    function handleRestoreJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && Array.isArray(parsed.data)) {
+            const confirmRestore = confirmAction(`File cadangan terverifikasi berisi ${parsed.data.length} arsip. Pulihkan dan gabungkan dengan data saat ini?`);
+            if (confirmRestore) {
+              // Gabungkan data unik berdasarkan id
+              const existingIds = new Set(records.map(r => r.id));
+              let addedCount = 0;
+
+              parsed.data.forEach(item => {
+                if (!existingIds.has(item.id)) {
+                  records.push(item);
+                  addedCount++;
+                }
+              });
+
+              saveRecordsToStorage();
+              renderTable();
+              updateDashboardStats();
+              showToast('Pemulihan Sukses', `Sebanyak ${addedCount} berkas baru berhasil dipulihkan ke arsip.`, 'success');
+            }
+          } else {
+            showToast('Format Tidak Cocok', 'Struktur file JSON cadangan tidak valid.', 'error');
+          }
+        } catch (err) {
+          showToast('Gagal Membaca File', 'File rusak atau bukan format JSON valid.', 'error');
+        }
+        event.target.value = ''; // Reset input file
+      };
+      reader.readAsText(file);
+    }
+
+    function confirmClearAllData() {
+      const ans1 = confirmAction('PERINGATAN KERAS: Seluruh riwayat arsip pelayanan akan dihapus secara permanen dari komputer ini. Lanjutkan?');
+      if (ans1) {
+        const ans2 = confirmAction('Apakah Anda sudah mengunduh file cadangan/backup? Tekan OK untuk benar-benar mengosongkan.');
+        if (ans2) {
+          records = [];
+          saveRecordsToStorage();
+          renderTable();
+          updateDashboardStats();
+          showToast('Data Dikosongkan', 'Seluruh arsip telah dibersihkan dari penyimpanan.', 'info');
+        }
+      }
+    }
+
+    // Statistik & Laporan Perhitungan
+    function updateDashboardStats() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const currentYearMonth = todayStr.substring(0, 7); // Format YYYY-MM
+
+      const countToday = records.filter(r => r.date === todayStr).length;
+      const countMonth = records.filter(r => r.date && r.date.startsWith(currentYearMonth)).length;
+      const countDone = records.filter(r => r.status === 'Selesai').length;
+      const countPending = records.filter(r => r.status === 'Diproses').length;
+
+      document.getElementById('statToday').textContent = countToday;
+      document.getElementById('statThisMonth').textContent = countMonth;
+      document.getElementById('statDone').textContent = countDone;
+      document.getElementById('statPending').textContent = countPending;
+
+      const percentDone = records.length > 0 ? Math.round((countDone / records.length) * 100) : 0;
+      document.getElementById('statDonePercent').textContent = `${percentDone}% dari total pengajuan`;
+
+      // Render Bar Jenis Surat
+      renderTypeStats();
+      // Render Bar Dusun
+      renderDusunStats();
+    }
+
+    function renderTypeStats() {
+      const container = document.getElementById('statTypeContainer');
+      if (!container) return;
+
+      const typeCounts = {};
+      records.forEach(r => {
+        typeCounts[r.letterType] = (typeCounts[r.letterType] || 0) + 1;
+      });
+
+      const sortedTypes = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
+
+      if (sortedTypes.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada data untuk dihitung.</p>';
+        return;
+      }
+
+      const total = records.length;
+      container.innerHTML = sortedTypes.slice(0, 6).map(([type, count]) => {
+        const pct = Math.round((count / total) * 100);
+        return `
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-700">${type}</span>
+              <span class="text-emerald-800">${count} berkas (${pct}%)</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div class="bg-emerald-600 h-2.5 rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderDusunStats() {
+      const container = document.getElementById('statDusunContainer');
+      if (!container) return;
+
+      const dusunCounts = {};
+      records.forEach(r => {
+        const key = r.dusun || 'Lainnya';
+        dusunCounts[key] = (dusunCounts[key] || 0) + 1;
+      });
+
+      const sorted = Object.entries(dusunCounts).sort((a, b) => b[1] - a[1]);
+
+      if (sorted.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada data untuk dihitung.</p>';
+        return;
+      }
+
+      const total = records.length;
+      container.innerHTML = sorted.map(([dusun, count]) => {
+        const pct = Math.round((count / total) * 100);
+        return `
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-700">${dusun}</span>
+              <span class="text-teal-800">${count} warga (${pct}%)</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div class="bg-teal-600 h-2.5 rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Sistem Notifikasi Toast Interaktif
+    let toastTimeout;
+    function showToast(title, message, type = 'success') {
+      const toast = document.getElementById('toastNotification');
+      const toastTitle = document.getElementById('toastTitle');
+      const toastMessage = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+
+      clearTimeout(toastTimeout);
+
+      toastTitle.textContent = title;
+      toastMessage.textContent = message;
+
+      if (type === 'success') {
+        toast.className = 'fixed top-5 right-5 z-50 transform translate-x-0 transition-transform duration-300 ease-in-out bg-white border-l-4 border-emerald-600 shadow-2xl rounded-r-xl p-4 max-w-md flex items-start gap-3';
+        toastIcon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>';
+      } else if (type === 'warning') {
+        toast.className = 'fixed top-5 right-5 z-50 transform translate-x-0 transition-transform duration-300 ease-in-out bg-white border-l-4 border-amber-500 shadow-2xl rounded-r-xl p-4 max-w-md flex items-start gap-3';
+        toastIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-500 text-xl"></i>';
+      } else if (type === 'error') {
+        toast.className = 'fixed top-5 right-5 z-50 transform translate-x-0 transition-transform duration-300 ease-in-out bg-white border-l-4 border-rose-600 shadow-2xl rounded-r-xl p-4 max-w-md flex items-start gap-3';
+        toastIcon.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-600 text-xl"></i>';
+      } else {
+        toast.className = 'fixed top-5 right-5 z-50 transform translate-x-0 transition-transform duration-300 ease-in-out bg-white border-l-4 border-sky-600 shadow-2xl rounded-r-xl p-4 max-w-md flex items-start gap-3';
+        toastIcon.innerHTML = '<i class="fa-solid fa-circle-info text-sky-600 text-xl"></i>';
+      }
+
+      toastTimeout = setTimeout(() => {
+        hideToast();
+      }, 4000);
+    }
+
+    function hideToast() {
+      const toast = document.getElementById('toastNotification');
+      toast.classList.add('translate-x-full');
+    }
+  </script>
+</body>
+</html>
